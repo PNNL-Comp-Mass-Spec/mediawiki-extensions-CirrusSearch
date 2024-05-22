@@ -30,6 +30,9 @@ class Version extends ElasticsearchIntermediary {
 		parent::__construct( $conn, null, 0 );
 	}
 
+	private $distributionName = 'Elasticsearch';
+	private $distributionLink = 'https://www.elastic.co/elasticsearch';
+
 	/**
 	 * Get the version of Elasticsearch with which we're communicating.
 	 *
@@ -46,9 +49,30 @@ class Version extends ElasticsearchIntermediary {
 		} catch ( \Elastica\Exception\ExceptionInterface $e ) {
 			return $this->failure( $e );
 		}
+		$data = $result->getData();
+		$dist = 'elasticsearch';
+		if ( isset( $data['version']['distribution'] ) ) {
+			$dist = $data[ 'version' ][ 'distribution' ];
+		}
+        if ( strpos( $dist, 'opensearch' ) === 0 ) {
+			$this->distributionName = 'OpenSearch';
+			$this->distributionLink = 'https://opensearch.org/platform/search/index.html';
+		} else {
+			$this->distributionName = 'Elasticsearch';
+			$this->distributionLink = 'https://www.elastic.co/elasticsearch';
+		}
 		return Status::newGood(
-			$result->getData()['version']['number']
+			$data['version']['number']
 		);
+	}
+
+	/**
+	 * Get the link/name of Elasticsearch with which we're communicating.
+	 *
+	 * @return string wiki-formatted link as a string
+	 */
+	public function getWikiLink() {
+		return '['.$this->distributionLink.' '.$this->distributionName.']';
 	}
 
 	/**

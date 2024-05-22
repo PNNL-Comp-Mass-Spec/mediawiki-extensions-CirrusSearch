@@ -336,7 +336,7 @@ class Hooks implements
 		$status = $version->get();
 		if ( $status->isOK() ) {
 			// We've already logged if this isn't ok and there is no need to warn the user on this page.
-			$software[ '[https://www.elastic.co/elasticsearch Elasticsearch]' ] = $status->getValue();
+			$software[ $version->getWikiLink() ] = $status->getValue();
 		}
 	}
 

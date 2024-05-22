@@ -55,9 +55,13 @@ class ConfigUtils {
 		if ( !isset( $result['version']['number'] ) ) {
 			return Status::newFatal( 'unable to determine, aborting.' );
 		}
+		$dist = 'elasticsearch';
+		if ( isset( $result['version']['distribution'] ) ) {
+			$dist = $result[ 'version' ][ 'distribution' ];
+		}
 		$result = $result[ 'version' ][ 'number' ];
 		$this->output( "$result..." );
-		if ( strpos( $result, '7.10' ) !== 0 ) {
+		if ( strpos( $result, '7.10' ) !== 0 && strpos( $dist, 'opensearch' ) !== 0 ) {
 			$this->output( "Not supported!\n" );
 			return Status::newFatal( "Only Elasticsearch 7.10.x is supported.  Your version: $result." );
 		} else {
